@@ -1,24 +1,5 @@
 package frontend;
 
-/*
- * This sample applet just selects 'Hello World' and the date from the database
- *
- * One way to get this work using appletviewer or a web browser with the Java plugin
- * for jre 5 or jre 6
- *  
- * 1. compile this file using jdk5 and use a jre 5 plugin and ojdbc5.jar
- *    or using jdk 6 and a jre 6 plugin and ojdbc6.jar
- * 2. put ojdbc5.jar or ojdbc6.jar at the same directory as the codebase 
- *    indicated in JdbcApplet.htm file
- * 3. modify JdbcApplet.htm file to let codebase point to the directory
- *    where JdbcApplet.class and ojdbc5.jar or ojdbc6.jar exist.
- *    using syntax of "file:/path_of_JdbcApplet/"
- * 4. use policytool to grant AllPermission of byte-codes at the codebase 
- *    indicated in .htm file to the applet.
- *    the URL syntax for codebase in file ~/.java.policy is
- *    "file:/path_of_JdbcApplet/*". This is to get around of java security.
- *    You could choose other permissions instead of AllPermission.
- */
 
 import java.io.IOException;
 import java.sql.*;
@@ -74,30 +55,24 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
       try
       {
 
-        // See if we need to open the connection to the database
         if (conn == null)
         {
         	System.out.println("Connection does not exist.");
         }
 
-        // Create a statement
         Statement stmt = conn.createStatement ();
 
-        // Execute the query
         output.append ("Executing query " + query + "\n");
         ResultSet rset = stmt.executeQuery (query);
 
-        // Dump the result
         while (rset.next ())
           output.append (rset.getString (1) + "\n");
 
-        // We're done
         output.append ("done.\n");
       }
       catch (Exception e)
       {
         e.printStackTrace();
-        // Oops
         output.append (e.getMessage () + "\n");
       }
     }
