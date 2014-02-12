@@ -76,9 +76,9 @@ public class DBExecution {
 	}
 
 
-	public void dropTable(String tableName) throws SQLException {
+	public int dropTable(String statement) throws SQLException {
 
-		drop.executeUpdate("DROP TABLE " + tableName + ";");
+		return drop.executeUpdate(statement);
 
 	}
 

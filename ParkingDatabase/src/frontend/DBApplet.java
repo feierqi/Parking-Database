@@ -27,6 +27,7 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
 	Connection conn;
 
 	Button create_button;
+	Button drop_button;
 
 	// Create the User Interface
 	public void init ()
@@ -44,6 +45,10 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
 		create_button = new Button ("create");
 		p.add (create_button);
 		create_button.addActionListener (this);
+		
+		drop_button = new Button ("drop");
+		p.add (drop_button);
+		drop_button.addActionListener (this);
 
 		try {
 			conn = DBConnectionSingleton.getConnect("pren", "pren@wpi.edu");
@@ -99,7 +104,7 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
 				DBExecution executor = new DBExecution(conn);
 				StatementParser parser = new StatementParser("Items");
 
-				output.append ("Executing query " + parser.getCreateStatement() + "\n");
+				output.append ("Executing create " + parser.getCreateStatement() + "\n");
 				int rows = executor.createTable(parser.getCreateStatement());
 				output.append (rows + " rows updated");
 			}
@@ -109,6 +114,31 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
 				output.append (e.getMessage () + "\n");
 			}
 		}
+		
+		if (ev.getSource() == drop_button)
+		{
+			try
+			{
+
+				if (conn == null)
+				{
+					System.out.println("Connection does not exist.");
+				}
+
+				DBExecution executor = new DBExecution(conn);
+				StatementParser parser = new StatementParser("Items");
+
+				output.append ("Executing drop " + parser.getCreateStatement() + "\n");
+				int rows = executor.dropTable(parser.getDropStatement());
+				output.append (rows + " rows updated");
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				output.append (e.getMessage () + "\n");
+			}
+		}
+		
 	}
 }
 

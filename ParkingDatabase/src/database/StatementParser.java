@@ -12,7 +12,7 @@ public class StatementParser {
 		String createStatement = null;
 		if (table == "Drivers") {
 			createStatement ="CREATE TABLE " + table + " (" +
-					"DLN NUMBER," +
+					"DLN NUMBER NOT NULL," +
 					"dName VARCHAR2(20)," +
 					"gender CHAR(1)," +
 					"ifShopping VARCHAR2(3)," +
@@ -27,7 +27,7 @@ public class StatementParser {
 		}
 		else if(table == "Cars") {
 			createStatement ="CREATE TABLE " + table + " (" +
-					"LP VARCHAR2(10)," +
+					"LP VARCHAR2(10) NOT NULL," +
 					"brand VARCHAR2(20)," +
 					"color VARCHAR2(20)," +
 					"cType VARCHAR2(20)," +
@@ -36,28 +36,28 @@ public class StatementParser {
 		}
 		else if(table == "Ownship") {
 			createStatement ="CREATE TABLE " + table + " (" +
-					"DLN VARCHAR2(10)," +
-					"LP VARCHAR2(10)," +
+					"DLN VARCHAR2(10) NOT NULL," +
+					"LP VARCHAR2(10) NOT NULL," +
 					"CONSTRAINT DL_pk PRIMARY KEY (DLN, LP)" +
 					")";
 		}
 		else if(table == "Park_Transaction") {
 			createStatement ="CREATE TABLE " + table + " (" +
-					"receiptNum NUMBER," +
+					"receiptNum NUMBER NOT NULL," +
 					"startTime TIMESTAMP," +
 					"endTime TIMESTAMP," +
 					"pPrice float," +
-					"DLN NUMBER," +
+					"DLN NUMBER NOT NULL," +
 					"CONSTRAINT DLNP_fk FOREIGN KEY(DLN) REFERENCES Drivers(DLN)," +
 					"CONSTRAINT RN_pk PRIMARY KEY (receiptNum)" +
 					")";
 		}
 		else if(table == "Grocery_Transaction") {
 			createStatement ="CREATE TABLE " + table + " (" +
-					"transactionNum NUMBER," +
+					"transactionNum NUMBER NOT NULL," +
 					"totalQuantity NUMBER," +
 					"discount float," +
-					"DLN NUMBER," +
+					"DLN NUMBER NOT NULL," +
 					"CONSTRAINT DLNG_fk FOREIGN KEY(DLN) REFERENCES Drivers(DLN)," +
 					"CONSTRAINT TN_pk PRIMARY KEY (transactionNum)," +
 					 "CONSTRAINT check_discount CHECK (discount < 1.0 AND discount > 0.0)" +
@@ -65,8 +65,8 @@ public class StatementParser {
 		}
 		else if(table == "Items") {
 			createStatement ="CREATE TABLE " + table + " (" +
-					"itemID NUMBER," +
-					"transactionNum NUMBER," +
+					"itemID NUMBER NOT NULL," +
+					"transactionNum NUMBER NOT NULL," +
 					"quantity NUMBER," +
 					"iType VARCHAR2(20)," +
 					"iPrice float," +
@@ -78,5 +78,14 @@ public class StatementParser {
 			throw new StatementParserException("No such table name exists!");
 		}
        return createStatement;
+	}
+	
+	public String getDropStatement() throws StatementParserException{
+		return "DROP TABLE " + table + " CASCADE CONSTRAINTS";
+	}
+	
+	public String getAlterStatement() throws StatementParserException{
+		String alterStatement = "alter table " + table + " modify ";
+		return alterStatement;
 	}
 }
