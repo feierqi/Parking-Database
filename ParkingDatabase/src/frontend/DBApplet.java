@@ -9,6 +9,7 @@ import java.awt.event.*;
 import database.DBConnectionSingleton;
 import database.DBExecution;
 import database.StatementParser;
+import database.TableNames;
 
 public class DBApplet extends java.applet.Applet implements ActionListener {
 
@@ -45,7 +46,7 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
 		create_button = new Button ("create");
 		p.add (create_button);
 		create_button.addActionListener (this);
-		
+
 		drop_button = new Button ("drop");
 		p.add (drop_button);
 		drop_button.addActionListener (this);
@@ -100,13 +101,16 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
 				{
 					System.out.println("Connection does not exist.");
 				}
-
 				DBExecution executor = new DBExecution(conn);
-				StatementParser parser = new StatementParser("Items");
-
-				output.append ("Executing create " + parser.getCreateStatement() + "\n");
-				int rows = executor.createTable(parser.getCreateStatement());
-				output.append (rows + " rows updated");
+				for(TableNames table : TableNames.values()) {
+					StatementParser parser = new StatementParser(table.toString());
+					output.append ("Executing create " + parser.getCreateStatement() + "\n");
+					int rows = executor.createTable(parser.getCreateStatement());
+					output.append (rows + " rows updated");
+					output.append ("Executing grand " + parser.grantStatement() + "\n");
+					rows = executor.grantPermission(parser.grantStatement());
+					output.append (rows + " rows updated");
+				}
 			}
 			catch (Exception e)
 			{
@@ -114,7 +118,7 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
 				output.append (e.getMessage () + "\n");
 			}
 		}
-		
+
 		if (ev.getSource() == drop_button)
 		{
 			try
@@ -126,11 +130,13 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
 				}
 
 				DBExecution executor = new DBExecution(conn);
-				StatementParser parser = new StatementParser("Items");
+				for(TableNames table : TableNames.values()) {
+					StatementParser parser = new StatementParser(table.toString());
 
-				output.append ("Executing drop " + parser.getCreateStatement() + "\n");
-				int rows = executor.dropTable(parser.getDropStatement());
-				output.append (rows + " rows updated");
+					output.append ("Executing drop " + parser.getCreateStatement() + "\n");
+					int rows = executor.dropTable(parser.getDropStatement());
+					output.append (rows + " rows updated");
+				}
 			}
 			catch (Exception e)
 			{
@@ -138,7 +144,7 @@ public class DBApplet extends java.applet.Applet implements ActionListener {
 				output.append (e.getMessage () + "\n");
 			}
 		}
-		
+
 	}
 }
 

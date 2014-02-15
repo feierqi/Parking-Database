@@ -1,9 +1,9 @@
 package database;
 
 public class StatementParser {
-	
+
 	private final String table;
-	
+
 	public StatementParser(String table){
 		this.table = table;
 	}
@@ -27,18 +27,18 @@ public class StatementParser {
 		}
 		else if(table == "Cars") {
 			createStatement ="CREATE TABLE " + table + " (" +
-					"LP VARCHAR2(10) NOT NULL," +
+					"plateNum VARCHAR2(10) NOT NULL," +
 					"brand VARCHAR2(20)," +
 					"color VARCHAR2(20)," +
 					"cType VARCHAR2(20)," +
-					"CONSTRAINT LP_pk PRIMARY KEY (LP)" +
+					"CONSTRAINT pn_pk PRIMARY KEY (plateNum)" +
 					")";
 		}
 		else if(table == "Ownship") {
 			createStatement ="CREATE TABLE " + table + " (" +
-					"DLN VARCHAR2(10) NOT NULL," +
-					"LP VARCHAR2(10) NOT NULL," +
-					"CONSTRAINT DL_pk PRIMARY KEY (DLN, LP)" +
+					"DLN NUMBER NOT NULL," +
+					"plateNum VARCHAR2(10) NOT NULL," +
+					"CONSTRAINT DL_pk PRIMARY KEY (DLN, plateNum)" +
 					")";
 		}
 		else if(table == "Park_Transaction") {
@@ -60,7 +60,7 @@ public class StatementParser {
 					"DLN NUMBER NOT NULL," +
 					"CONSTRAINT DLNG_fk FOREIGN KEY(DLN) REFERENCES Drivers(DLN)," +
 					"CONSTRAINT TN_pk PRIMARY KEY (transactionNum)," +
-					 "CONSTRAINT check_discount CHECK (discount < 1.0 AND discount > 0.0)" +
+					"CONSTRAINT check_discount CHECK (discount < 1.0 AND discount > 0.0)" +
 					")";
 		}
 		else if(table == "Items") {
@@ -77,15 +77,52 @@ public class StatementParser {
 		else{
 			throw new StatementParserException("No such table name exists!");
 		}
-       return createStatement;
+		return createStatement;
 	}
-	
+
 	public String getDropStatement() throws StatementParserException{
 		return "DROP TABLE " + table + " CASCADE CONSTRAINTS";
 	}
-	
-	public String getAlterStatement() throws StatementParserException{
-		String alterStatement = "alter table " + table + " modify ";
-		return alterStatement;
+
+	public String grantStatement() throws StatementParserException{
+		return "GRANT ALL ON " + table + " TO amleonard";
+	}
+
+	public String insertStatement() throws StatementParserException{
+		String insertTableSQL;
+		if(table == "Drivers") {
+			insertTableSQL = "INSERT INTO " + table 
+					+ " (DLN, dName, gender, ifShopping, street, city, state, zipcode) "
+					+ "VALUES (?,?,?,?,?,?,?,?)";
+		}
+		else if(table == "Cars"){
+			insertTableSQL = "INSERT INTO " + table 
+					+ " (plateNum, brand, color, cType) "
+					+ "VALUES (?,?,?,?)";
+		}
+		else if(table == "Ownship"){
+			insertTableSQL = "INSERT INTO " + table 
+					+ " (DLN, plateNum) "
+					+ "VALUES (?,?)";
+		}
+		else if(table == "Park_Transaction"){
+			insertTableSQL = "INSERT INTO " + table 
+					+ " (receiptNum, startTime, endTime, pPrice, DLN) "
+					+ "VALUES (?,?,?,?,?)";
+		}
+		else if(table == "Grocery_Transaction"){
+			insertTableSQL = "INSERT INTO " + table 
+					+ " (transactionNum, totalQuantity, discount, DLN) "
+					+ "VALUES (?,?,?,?)";
+		}
+		else if(table == "Items"){
+			insertTableSQL = "INSERT INTO " + table 
+					+ " (itemID, transactionNum, quantity, iType, iPrice, iName) "
+					+ "VALUES (?,?,?,?,?,?)";
+		}
+		else{
+			throw new StatementParserException("No such table name exists!");
+		}
+		return insertTableSQL;
 	}
 }

@@ -16,6 +16,7 @@ public class DBExecution {
 	private Statement create;
 	private Statement drop;
 	private Statement select;
+	private Statement grant;
 //	private PreparedStatement query;
 //	private PreparedStatement update;
 //	private PreparedStatement insert;
@@ -46,18 +47,18 @@ public class DBExecution {
 		drop = createStatement();
 
 		select = createStatement();
+		
+		grant  = createStatement();
 
 //		query = createStatement("SELECT ? FROM ? WHERE ?");
 
 //		update = createStatement("UPDATE ? SET ? WHERE ?");
 
-//		insert = createStatement("INSERT INTO ? ?");
-
 //		delete = createStatement("DELETE FROM ? WHERE ?");
 
 	}
 
-	private PreparedStatement createStatement(String statementSyntax) throws SQLException {
+	public PreparedStatement createStatement(String statementSyntax) throws SQLException {
 		PreparedStatement statement = dbConnection.prepareStatement(statementSyntax);
 		statements.add(statement);
 		return statement;
@@ -73,6 +74,10 @@ public class DBExecution {
 
 		return create.executeUpdate(statement);
 
+	}
+	
+	public int grantPermission(String statement) throws SQLException {
+		return grant.executeUpdate(statement);
 	}
 
 
@@ -97,7 +102,7 @@ public class DBExecution {
 
 	/**
 	
-	public void insertRecord(String firstName, String lastName, Integer , String , String email) throws SQLException {
+	public void insertRecord(String firstName, String , Integer , String , String ) throws SQLException {
 
 		insert.setString(1, Name);
 
